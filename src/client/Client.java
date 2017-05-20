@@ -42,7 +42,8 @@ public class Client implements Runnable {
             System.out.println("connected to " + socket);
         }
         catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Coud not connect to server");
+            game.notConnected();
         }
         thread = new Thread(this);
         thread.start();

@@ -89,6 +89,14 @@ public class Game extends javax.swing.JFrame {
     }
     
     /**
+     * Shows dialog window and exits the application if could not connect to server
+     */
+    public void notConnected() {
+        JOptionPane.showMessageDialog(this, "K serveru se nepodařilo připojit");
+        System.exit(0);
+    }
+    
+    /**
      * Place opponents symbol in the field according to his move
      * Shows dialog window and exits the application if opponents wins
      * @param rowIndex
@@ -254,69 +262,71 @@ public class Game extends javax.swing.JFrame {
         if(jTable2.isEnabled() == true) {
             int rowIndex = jTable2.getSelectedRow();
             int colIndex = jTable2.getSelectedColumn();
-            jTable2.getModel().setValueAt(mySymbol, rowIndex, colIndex);
-            jTable2.setEnabled(false);
-            for (int i=0; i<20; i++) {
-                for (int j=0; j<16; j++) {
-                    if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
-                            jTable2.getModel().getValueAt(i,j+1) == mySymbol &&
-                            jTable2.getModel().getValueAt(i,j+2) == mySymbol &&
-                            jTable2.getModel().getValueAt(i,j+3) == mySymbol &&
-                            jTable2.getModel().getValueAt(i,j+4) == mySymbol) {
-                        client.sendMove(rowIndex, colIndex, true);
-                        System.out.println("You have won");
-                        won = true;
-                        JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
-                        System.exit(0);
+            if(jTable2.getModel().getValueAt(rowIndex, colIndex) == null) {
+                jTable2.getModel().setValueAt(mySymbol, rowIndex, colIndex);
+                jTable2.setEnabled(false);
+                for (int i=0; i<20; i++) {
+                    for (int j=0; j<16; j++) {
+                        if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
+                                jTable2.getModel().getValueAt(i,j+1) == mySymbol &&
+                                jTable2.getModel().getValueAt(i,j+2) == mySymbol &&
+                                jTable2.getModel().getValueAt(i,j+3) == mySymbol &&
+                                jTable2.getModel().getValueAt(i,j+4) == mySymbol) {
+                            client.sendMove(rowIndex, colIndex, true);
+                            System.out.println("You have won");
+                            won = true;
+                            JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
+                            System.exit(0);
+                        }
+                    }
+                }       
+                for (int i=0; i<16; i++) {
+                    for (int j=0; j<20; j++) {
+                        if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+1,j) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+2,j) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+3,j) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+4,j) == mySymbol) {
+                            client.sendMove(rowIndex, colIndex, true);
+                            System.out.println("You have won");
+                            won = true;
+                            JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
+                            System.exit(0);
+                        }
                     }
                 }
-            }       
-            for (int i=0; i<16; i++) {
-                for (int j=0; j<20; j++) {
-                    if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+1,j) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+2,j) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+3,j) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+4,j) == mySymbol) {
-                        client.sendMove(rowIndex, colIndex, true);
-                        System.out.println("You have won");
-                        won = true;
-                        JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
-                        System.exit(0);
+                for (int i=0; i<16; i++) {
+                    for (int j=0; j<16; j++) {
+                        if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+1,j+1) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+2,j+2) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+3,j+3) == mySymbol &&
+                                jTable2.getModel().getValueAt(i+4,j+4) == mySymbol) {
+                            client.sendMove(rowIndex, colIndex, true);
+                            System.out.println("You have won");
+                            won = true;
+                            JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
+                            System.exit(0);
+                        }
                     }
                 }
+                for (int i=4; i<20; i++) {
+                    for (int j=0; j<16; j++) {
+                        if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
+                                jTable2.getModel().getValueAt(i-1,j+1) == mySymbol &&
+                                jTable2.getModel().getValueAt(i-2,j+2) == mySymbol &&
+                                jTable2.getModel().getValueAt(i-3,j+3) == mySymbol &&
+                                jTable2.getModel().getValueAt(i-4,j+4) == mySymbol) {
+                            client.sendMove(rowIndex, colIndex, true);
+                            System.out.println("You have won");
+                            won = true;
+                            JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
+                            System.exit(0);
+                        }
+                    }
+                }
+                client.sendMove(rowIndex, colIndex, false);
             }
-            for (int i=0; i<16; i++) {
-                for (int j=0; j<16; j++) {
-                    if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+1,j+1) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+2,j+2) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+3,j+3) == mySymbol &&
-                            jTable2.getModel().getValueAt(i+4,j+4) == mySymbol) {
-                        client.sendMove(rowIndex, colIndex, true);
-                        System.out.println("You have won");
-                        won = true;
-                        JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
-                        System.exit(0);
-                    }
-                }
-            }
-            for (int i=4; i<20; i++) {
-                for (int j=0; j<16; j++) {
-                    if (jTable2.getModel().getValueAt(i,j) == mySymbol &&
-                            jTable2.getModel().getValueAt(i-1,j+1) == mySymbol &&
-                            jTable2.getModel().getValueAt(i-2,j+2) == mySymbol &&
-                            jTable2.getModel().getValueAt(i-3,j+3) == mySymbol &&
-                            jTable2.getModel().getValueAt(i-4,j+4) == mySymbol) {
-                        client.sendMove(rowIndex, colIndex, true);
-                        System.out.println("You have won");
-                        won = true;
-                        JOptionPane.showMessageDialog(this, "Vyhrál jsi!");
-                        System.exit(0);
-                    }
-                }
-            }
-            client.sendMove(rowIndex, colIndex, false);
         }
     }//GEN-LAST:event_makeMove
 
