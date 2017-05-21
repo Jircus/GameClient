@@ -5,6 +5,7 @@
  */
 package client;
 
+import gui.Game;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,30 +24,32 @@ public class Client implements Runnable {
     private ObjectInputStream input;
     private String name;
     private String opponentsName;
-    private final Thread thread;
-    private Socket socket;
+    private Socket gameSocket;
+    private Socket chatSocket;
     private Game game;
+    private Chat chat;
     
     /**
      * Creates new instance
      * @param host
      * @param port
+     * @param secondPort
      * @param name
      * @param game 
      */
-    public Client(String host, int port, String name, Game game) {
+    public Client(String host, int port, int secondPort, String name, Game game) {
         this.name = name;
         this.game = game;
         try {
-            socket = new Socket(host, port);
-            System.out.println("connected to " + socket);
+            gameSocket = new Socket(host, port);
+            chatSocket = new Socket(host, secondPort);
+            System.out.println("connected to " + gameSocket + " and " + chatSocket);
         }
         catch (IOException ex) {
             System.out.println("Coud not connect to server");
             game.notConnected();
         }
-        thread = new Thread(this);
-        thread.start();
+        new Thread(this).start();
     }
 
     /**
@@ -55,22 +58,26 @@ public class Client implements Runnable {
     @Override
     public void run() {
         try {
-        output = new ObjectOutputStream(socket.getOutputStream());
-        output.writeObject(name);
-        System.out.println("Sending name " + name);
-        input = new ObjectInputStream(socket.getInputStream());
-        game.setSymbol(input.readObject().toString());
-        System.out.println("Symbol is set");
-        input.readObject();
-        System.out.println("Connection checked");
-        Boolean b = (Boolean)input.readObject();
-        opponentsName = input.readObject().toString();
-        game.setGameEnabled(b, opponentsName);
+            output = new ObjectOutputStream(gameSocket.getOutputStream());
+            output.writeObject(name);
+            System.out.println("Sending name " + name);
+            input = new ObjectInputStream(gameSocket.getInputStream());
+            game.setSymbol(input.readObject().toString());
+            System.out.println("Symbol is set");
+            input.readObject();
+            System.out.println("Connection checked");
+            Boolean b = (Boolean)input.readObject();
+            opponentsName = input.readObject().toString();
+            game.setGameEnabled(b, opponentsName);
+            System.out.println("Opponent's name is " + opponentsName);
+            chat = new Chat(chatSocket, game);
+            new Thread(chat).start();
+            System.out.println("Started thread for chat");
             while(true) {
                 Message message = (Message)input.readObject();
-                game.oponentsTurn(message.getRowIndex(), message.getColIndex(),
+                game.opponentsTurn(message.getRowIndex(), message.getColIndex(),
                         message.isWon(), opponentsName);
-                System.out.println("Oponent placed symbol in row " + message.getRowIndex()
+                System.out.println("Opponent placed symbol in row " + message.getRowIndex()
                         + " and column " + message.getColIndex());
                 game.setReadyLabel();
             }
@@ -79,8 +86,8 @@ public class Client implements Runnable {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         catch(IOException e){
-            System.out.println("Oponent has disconnected");
-            game.oponentDisconnected();
+            System.out.println("Opponent has disconnected");
+            game.opponentDisconnected();
         }
     }
     
@@ -100,5 +107,13 @@ public class Client implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * Sends message
+     * @param message 
+     */
+    public void sendMessage(String message) {
+        chat.sendMessage(message);
     }
 }

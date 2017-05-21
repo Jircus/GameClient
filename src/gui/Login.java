@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client;
+package gui;
 
 /**
  * Login window
@@ -13,15 +13,18 @@ public class Login extends javax.swing.JFrame {
 
     private final String host;
     private final int port;
+    private final int secondPort;
     
     /**
      * Creates new form Login
      * @param host
      * @param port
+     * @param secondPort
      */
-    public Login(String host, int port) {
+    public Login(String host, int port, int secondPort) {
         this.host = host;
         this.port = port;
+        this.secondPort = secondPort;
         initComponents();
     }
 
@@ -101,7 +104,7 @@ public class Login extends javax.swing.JFrame {
      */
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         this.setVisible(false);
-        Game game = new Game(host, port, jTextField1.getText());
+        Game game = new Game(host, port, secondPort, jTextField1.getText());
         game.setLocationRelativeTo(null);
         game.setVisible(true);
     }//GEN-LAST:event_jButton2MouseClicked

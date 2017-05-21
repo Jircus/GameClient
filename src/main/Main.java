@@ -5,7 +5,7 @@
  */
 package main;
 
-import client.Login;
+import gui.Login;
 
 /**
  * Main class that contains main method
@@ -17,8 +17,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        //Login login = new Login(args[0], Integer.parseInt(args[1]));
-        Login login = new Login("localhost", 58585);
+        //Login login = new Login(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        Login login = new Login("localhost", 58585, 58586);
         login.setLocationRelativeTo(null);
         login.setVisible(true);
     }
