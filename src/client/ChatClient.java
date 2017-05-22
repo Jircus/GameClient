@@ -17,19 +17,19 @@ import java.util.logging.Logger;
  *
  * @author Jircus
  */
-public class Chat implements Runnable {
+public class ChatClient implements Runnable {
     
     private final Socket socket;
     private final Game game;
     private ObjectOutputStream output;
 
-    public Chat(Socket socket, Game game) {
+    public ChatClient(Socket socket, Game game) {
             this.socket = socket;
             this.game = game;
         try {
             output = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -43,7 +43,7 @@ public class Chat implements Runnable {
                 System.out.println("Receiving message");
             }
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException e) {}
     }
     
@@ -56,7 +56,7 @@ public class Chat implements Runnable {
             output.writeObject(message);
             System.out.println("Sending message");
         } catch (IOException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
         

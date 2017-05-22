@@ -5,7 +5,7 @@
  */
 package gui;
 
-import client.Client;
+import client.GameClient;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
@@ -17,7 +17,7 @@ public class Game extends javax.swing.JFrame {
 
     private String mySymbol;
     private String opponentsSymbol;
-    private final Client client;
+    private final GameClient client;
     private boolean won;
     
     /**
@@ -29,7 +29,7 @@ public class Game extends javax.swing.JFrame {
      */
     public Game(String host, int port, int secondPort, String name) {
         initComponents();
-        this.client = new Client(host, port, secondPort, name, this);
+        this.client = new GameClient(host, port, secondPort, name, this);
         jTable2.setEnabled(false);
         jLabel2.setText("Přihlášen jako: " + name);
         won = false;

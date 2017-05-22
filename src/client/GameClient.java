@@ -18,7 +18,7 @@ import protocol.Message;
  * Client thread for communication with server
  * @author Jircus
  */
-public class Client implements Runnable {
+public class GameClient implements Runnable {
     
     private ObjectOutputStream output;
     private ObjectInputStream input;
@@ -27,7 +27,7 @@ public class Client implements Runnable {
     private Socket gameSocket;
     private Socket chatSocket;
     private Game game;
-    private Chat chat;
+    private ChatClient chat;
     
     /**
      * Creates new instance
@@ -37,7 +37,7 @@ public class Client implements Runnable {
      * @param name
      * @param game 
      */
-    public Client(String host, int port, int secondPort, String name, Game game) {
+    public GameClient(String host, int port, int secondPort, String name, Game game) {
         this.name = name;
         this.game = game;
         try {
@@ -70,7 +70,7 @@ public class Client implements Runnable {
             opponentsName = input.readObject().toString();
             game.setGameEnabled(b, opponentsName);
             System.out.println("Opponent's name is " + opponentsName);
-            chat = new Chat(chatSocket, game);
+            chat = new ChatClient(chatSocket, game);
             new Thread(chat).start();
             System.out.println("Started thread for chat");
             while(true) {
@@ -83,7 +83,7 @@ public class Client implements Runnable {
             }
         }
         catch (ClassNotFoundException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         catch(IOException e){
             System.out.println("Opponent has disconnected");
@@ -105,7 +105,7 @@ public class Client implements Runnable {
         try {
             output.writeObject(message);
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
